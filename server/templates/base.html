@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+  <link rel="shortcut icon" href="/static/img/favicon.png">
+  {% block css %}
+  {% endblock %}
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="/static/js/qrcode.min.js"></script>
+  <script type="text/javascript" src="//cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.17/vue.min.js"></script>
+
+
+  <title>{% block title %}title{% endblock %} - {{_("TUNA Danmaku Site")}}</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<div class="row">
+	<div class="col-md-8 col-md-offset-2 text-right">
+		{% if session.get('language', '') == "zh_CN"%}
+		<a href="?lang=en">English</a>
+		{% else %}
+		<a href="?lang=zh_CN">简体中文</a>
+		{% endif %}
+	</div>
+</div>
+
+{% block body %}
+{% endblock %}
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <hr />
+    <div class="text-center">
+      <div>Source code available under GPLv3 at <a href="https://github.com/tuna/gdanmaku-server">https://github.com/tuna/gdanmaku-server</a> </div>
+      <div>Copyright &copy; TUNA </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% block js%}
+{% endblock %}
+
+</body>
+</html>
+{#
+vim: ft=jinja
+#}

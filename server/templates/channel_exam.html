@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% block title %}{{channel.desc}} {{_('Danmaku Review')}}{% endblock %}
+
+{% block body %}
+<div class="row" id="danmaku-exam">
+	<div class="col-md-8 col-md-offset-2">
+		<h2>{{channel.desc}} {{_('Danmaku Review')}}</h2>
+		<form class="form-inline" role="form" @submit="set_exam_passwd" v-show="!exam_passwd">
+			<div class="form-group">
+				<input type="password" class="form-control" v-model="exam_passwd_buf" placeholder="{{_("Review Password")}}">
+				<div class="btn btn-success" @click="set_exam_passwd">{{_("Save")}}</div>
+			</div>
+		</form>
+
+		{% raw %}
+		<div v-show="error_msg">
+			<div class='alert alert-danger'>{{error_msg}}</div>
+		</div>
+		{% endraw %}
+
+		<div>
+			<div>
+				<h3>{{_("Review List")}}</h3>
+				<h4>{{_("Keyboard Shortcut: &lt;Enter&gt; to pass the 1st danmaku, &lt;Backspace&gt; or &lt;Delete&gt; to supress the first danmaku") }}</h4>
+			</div>
+
+		{% raw %}
+			<div class="row" v-for="dm in danmakus" track-by="id">
+				<div class="danmaku" v-bind:class="{'disabled': dm.disabled}">
+					<div class="col-md-1 text-left">
+						<div class="btn btn-success" @click="post_danmaku($index)" :disabled="dm.disabled">
+							✓
+						</div>
+					</div>
+					<div class="col-md-10 danmaku-text">
+						{{ dm.text }}
+					</div>
+					<div class="col-md-1"></div>
+					<div class="btn btn-danger" @click="ignore_danmaku($index)" :disabled="dm.disabled">
+						&times;
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endraw %}
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+
+$(document).ready(function() {
+	var danmakuData = {
+		current_id: 0,
+		danmakus: [],
+		exam_passwd_buf: "",
+		exam_passwd: "{{passwd}}",
+		error_msg: "",
+		subscribing: false
+	}
+
+	var new_danmaku = function(danmaku) {
+		danmakuData.current_id++;
+		danmaku.id = danmakuData.current_id;
+		danmaku.disabled = false;
+		danmakuData.danmakus.push(danmaku);
+	}
+
+	var danmakuVue = new Vue({
+		el: "#danmaku-exam",
+		data: danmakuData,
+		created: function(){
+			// listen to keyboard events
+			window.addEventListener('keyup', this.process_keyboard)
+		},
+		methods: {
+			post_danmaku: function(idx) {
+				var dm = this.danmakus[idx];
+				dm.disabled = true;
+				this.danmakus.$set(idx, dm);
+				var del_id = dm.id;
+				$.ajax({
+					type: "POST",
+					dataType: "json",
+					headers: {
+						"Content-Type": "application/json",
+						"X-GDANMAKU-EXAM-KEY": this.exam_passwd
+					},
+					url: "{{ url_for('api_post_danmaku', cname=channel.name) }}",
+					data: JSON.stringify({
+						'content': dm.text,
+						'color': dm.style,
+						'position': dm.position
+					})
+				})
+				.done(function(resp){
+					for (idx in danmakuVue.danmakus) {
+						if (danmakuVue.danmakus[idx].id == dm.id) {
+							danmakuVue.danmakus.splice(idx, 1);
+						}
+					}
+				})
+				.fail(function(xhr, textStatus, errorThrown){
+					if (xhr.status == 403) {
+						danmakuVue.show_error("{{_('Wrong password, refresh the page to reset!')}}");
+					} else {
+						danmakuVue.show_error("{{_('Something Wired happend, refresh the page to retry!')}}");
+					}
+				});
+			},
+			post_first_danmaku: function() {
+				for (idx in this.danmakus) {
+					var dm = this.danmakus[idx];
+					if (!dm.disabled) {
+						this.post_danmaku(idx);
+						break;
+					}
+				}
+			},
+			ignore_danmaku: function(idx) {
+				this.danmakus.splice(idx, 1);
+			},
+			ignore_first_danmaku: function() {
+				for (idx in this.danmakus) {
+					var dm = this.danmakus[idx];
+					if (!dm.disabled) {
+						this.ignore_danmaku(idx);
+						break;
+					}
+				}
+			},
+			set_exam_passwd: function(ev) {
+				ev.preventDefault();
+				this.exam_passwd = this.exam_passwd_buf;
+				window.setTimeout(window.poll_danmaku, 50);
+			},
+			show_error: function(msg) {
+				this.error_msg = msg;
+			},
+			process_keyboard: function(e) {
+				if(!this.subscribing) {
+					return
+				}
+				var code = (e.keyCode ? e.keyCode : e.which);
+				if (code == 13) {
+					// enter key
+					this.post_first_danmaku();
+				} else if (code == 8 || code == 46) {
+					// backspace key or delete key
+					this.ignore_first_danmaku();
+				}
+			}
+		}
+	});
+
+	window.poll_danmaku = function() {
+		danmakuVue.subscribing = true;
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			headers: {
+				"Content-Type": "application/json",
+				"X-GDANMAKU-EXAM-KEY": danmakuVue.exam_passwd
+			},
+			url: "{{ url_for('api_danmaku_to_exam', cname=channel.name)}}"
+		})
+		.done(function(resp){
+			$.each(resp, function(i, dm){
+				new_danmaku(dm);
+			});
+			window.setTimeout(window.poll_danmaku, 0);
+		})
+		.fail(function(xhr, textStatus, errorThrown){
+			if (xhr.readyState == 4 ) {
+				// HTTP errror 
+				if (xhr.status == 403)	{
+					danmakuVue.show_error("{{_('Wrong password, refresh the page to reset!')}}");
+				}
+			} else if (xhr.readyState == 0) {
+				// network error 
+				// retry in 2 seconds
+				window.setTimeout(window.poll_danmaku, 2000);
+			}else {
+				// something wired happend  
+				danmakuVue.show_error("{{_('Something Wired happend, refresh the page to retry!')}}");
+			}
+		});
+	} //poll_danmaku
+
+	if (danmakuVue.exam_passwd) {
+		window.setTimeout(window.poll_danmaku, 50);
+	}
+
+});
+
+</script>
+{% endblock %}
+
+{% block css %}
+<style type="text/css">
+body {
+	padding-top: 40px; 
+}
+.danmaku.disabled .danmaku-text {
+	color: #999;
+}
+.danmaku-text {
+	font-size: 2em;
+}
+</style>
+{% endblock %}
+
+
+{#
+vim: ft=jinja sw=2 ts=2 sts=2
+#}

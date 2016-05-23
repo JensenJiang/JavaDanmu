@@ -1,3 +1,7 @@
 #eclipse project
 /bin/
 .classpath
+
+# IntelliJ Idea Project
+/.idea/
+/danmaQ.iml

@@ -1,0 +1,8 @@
+Build Specs (13/06/2015):
+	* Ubuntu 14.04.2
+	* Kernel 3.16.0-40
+	* Qt 4.8.7
+	* Qt Jambi Change-Id: I0eb0a25770616c9001d68178014fd7882c1daca8 -- http://gerrit.smar.fi/#/c/1287/
+	* GCC 4.8.2
+	* Java: OpenJDK 1.7.0_79
+	* Ant 1.9.3

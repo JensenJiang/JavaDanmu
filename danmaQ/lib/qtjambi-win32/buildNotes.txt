@@ -1,0 +1,9 @@
+Build Specs (23/01/2015):
+    * Windows 7 SP1 x64
+    * Visual C++ 2012 x86
+    * JDK 1.7.0_71 x86
+    * Qt 4.8.6 pre-compiled from http://sourceforge.net/projects/qtx64/files/qt-x86/4.8.6/msvc2012
+    * Qt Jambi Change-Id: I438573d44ee4b27e0e5712a8992582e1c581d412 -- http://gerrit.smar.fi/#/c/1222
+	
+Note: It is required to have Visual C++ Redistributable for Visual Studio 2012 x86 installed 
+        -> link: http://www.microsoft.com/en-us/download/details.aspx?id=30679

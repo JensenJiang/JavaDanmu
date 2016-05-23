@@ -1,1 +1,5 @@
 /bin/
+
+# IntelliJ Idea Project
+/.idea/
+/danmaQ.iml

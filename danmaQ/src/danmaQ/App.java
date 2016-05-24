@@ -27,7 +27,7 @@ public class App extends QWidget
     Subscriber subscriber;
     TrayIcon trayIcon;
 
-    Signal0 stopSubscription = new Signal0();
+    Signal0 stop_subscription = new Signal0();
 
     public static void main(String []args)
     {
@@ -107,7 +107,7 @@ public class App extends QWidget
 
             if (this.subscriber != null && this.subscriber.thread().isAlive())
             {
-                this.subscriber.newDanmaku.connect(w, "newDanmaku(String, String, String)");
+                this.subscriber.new_danmaku.connect(w, "newDanmaku(String, String, String)");
             }
         }
     }

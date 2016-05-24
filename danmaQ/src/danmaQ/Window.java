@@ -3,6 +3,7 @@ package danmaQ;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+import java.util.regex.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -103,15 +104,21 @@ public class Window extends QWidget
     
     int slot_y(int slot)
     {
-    	return (this.app.lineHeight * slot + VMARGIN);
+    	return (this.app.lineHeight * slot + UI.VMARGIN);
     }
     
     String escape_text(String text) {
     	String escaped = escape(text);
-
-    	escaped.replace(QRegExp("([^\\\\])\\\\n"), "\\1<br/>");
-    	escaped.replace(QRegExp("\\\\\\\\n"), "\\n");
-    	escaped.replace(QRegExp("\\[s\\](.+)\\[/s\\]"), "<s>\\1</s>");
+    	
+    	Pattern p = Pattern.compile("([^\\\\])\\\\n");
+    	Matcher m = p.matcher(escaped);
+    	m.replaceAll("\\1<br/>");
+    	p = Pattern.compile("\\\\\\\\n");
+    	m = p.matcher(escaped);
+    	m.replaceAll("\\n");
+    	p = Pattern.compile("\\[s\\](.+)\\[/s\\]");
+    	m = p.matcher(escaped);
+    	m.replaceAll("<s>\\1</s>");
 
     	return escaped;
     }
@@ -137,13 +144,11 @@ public class Window extends QWidget
     	if (slot < 0) {
     		// myDebug << "Screen is Full!";
     		return;
-    	} 
+    	}
 
     	Danmaku l = new Danmaku(escape_text(text), color, pos, slot, this, this.app);
-    	this.connect(l, SIGNAL(exited(Danmaku)),
-    				  this, SLOT(delete_danmaku(Danmaku)));
-    	this.connect(l, SIGNAL(clear_fly_slot(int)),
-    				this, SLOT(clear_fly_slot(int)));
+    	l.exited.connect(this, "delete_danmaku(Danmaku)");
+    	l.clear_fly_slot.connect(this, "clear_fly_slot(int)");
     	l.show();
     	// l->move(200, 200);
     }

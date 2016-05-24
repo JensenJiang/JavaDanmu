@@ -58,7 +58,7 @@ public class Subscriber extends QObject implements Runnable{
 			loop.exec();
 			timeout.stop();
 			if(mark_stop){
-				//TODO: Debug info
+				System.out.println("Thread marked to stop");
 				break;
 			}
 			if(http.error() != null){

@@ -1,7 +1,9 @@
 package danmaQ;
 
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,9 +23,11 @@ public class App extends QWidget
     QPushButton hideBtn = new QPushButton("&Hide", this);
     QPushButton mainBtn = new QPushButton("&Subscribe", this);
 
-    List<QWidget> dmWindows;
+    List<QWidget> dmWindows = new ArrayList<>();
     Subscriber subscriber;
     TrayIcon trayIcon;
+
+    Signal0 stopSubscription = new Signal0();
 
     public static void main(String []args)
     {
@@ -76,6 +80,66 @@ public class App extends QWidget
         this.speedScale = 1.0f;
 
         this.subscriber = null;
+        this.initWindows();
+
+        this.mainBtn.released.connect(this, "toggleSubscription()");
+        this.hideBtn.released.connect(this, "hide()");
+        this.trayIcon.toggleAction.triggered.connect(this, "toggleSubscription()");
+        this.trayIcon.refreshScreenAction.triggered.connect(this, "resetWindows()");
+        this.trayIcon.showAction.triggered.connect(this, "show()");
+        this.trayIcon.aboutAction.triggered.connect(this, "showAboutDialog()");
+        this.trayIcon.exitAction.triggered.connect(this, "close()");
+
+        this.show();
+        QDesktopWidget desktop = new QDesktopWidget();
+        QPoint center = desktop.screenGeometry(desktop.primaryScreen()).center();
+        this.move(center.x() - this.width() / 2, center.y() - this.height() / 2);
+    }
+
+    void initWindows()
+    {
+        QDesktopWidget desktop = new QDesktopWidget();
+        this.screenCount = desktop.screenCount();
+        for (int i = 0; i < desktop.screenCount(); i++)
+        {
+            Window w = new Window(i, this);
+            this.dmWindows.add(w);
+
+            if (this.subscriber != null && this.subscriber.thread().isAlive())
+            {
+                this.subscriber.newDanmaku.connect(w, "newDanmaku(String, String, String)");
+            }
+        }
+    }
+
+    void toggleSubscription()
+    {
+        /* not implemented */
+    }
+
+    void resetWindows()
+    {
+        /* not implemented */
+    }
+
+    void showAboutDialog()
+    {
+        /* not implemented */
+    }
+
+    void onSubscriptionStarted()
+    {
+        /* not implemented */
+    }
+
+    void onSubscriptionStopped()
+    {
+        /* not implemented */
+    }
+
+    void onNewAlert(String msg)
+    {
+        /* not implemented */
     }
 }
 

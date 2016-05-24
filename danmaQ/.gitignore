@@ -5,3 +5,7 @@
 # IntelliJ Idea Project
 /.idea/
 /danmaQ.iml
+
+# JNI build
+/jni/*.so
+/jni/*.dll

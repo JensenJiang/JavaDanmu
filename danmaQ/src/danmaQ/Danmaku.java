@@ -138,7 +138,7 @@ public class Danmaku extends QLabel{
         this.close();
         emit exited(this);
 
-        if(this.position == FLY) {
+        if(this.position == Position.FLY) {
             emit clear_fly_slot(this.slot); //
         }
         this.close();

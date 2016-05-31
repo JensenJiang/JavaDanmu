@@ -123,6 +123,11 @@ public class Window extends QWidget
     	return escaped;
     }
     
+    String escape(String text)
+    {
+    	return text.replace("<", "&lt;").replace(">", "&gt;").replace("&", "&amp;").replace("\"", "&quot;");
+    }
+    
     void new_danmaku(String text, String color, String position)
     {
     	Position pos;

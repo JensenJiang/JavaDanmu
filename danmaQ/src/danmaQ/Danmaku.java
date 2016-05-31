@@ -125,7 +125,7 @@ public class Danmaku extends QLabel{
                 QRect(this._x, this._y, this.width(), this.height()));
 
         animation.setEndValue(
-                QRect(-this->width(), this->_y, this->width(), this->height()));
+                QRect(-this.width(), this._y, this.width(), this.height()));
         animation.start(QAbstractAnimation.DeleteWhenStopped);
 
         connect(

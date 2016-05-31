@@ -63,7 +63,12 @@ public class Subscriber extends QObject implements Runnable{
 			}
 			if(http.error() != null){
 				System.out.println(http.errorString() + "\nWait 2 secs");
-				Thread.sleep(2000);
+				try{
+					Thread.sleep(2000);
+				}
+				catch(InterruptedException e){
+					System.out.println("Thread has been interrupted!");
+				}
 			}
 			else{
 				parse_response();

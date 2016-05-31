@@ -1,6 +1,7 @@
 /**
  * Created by hrsonion on 16/5/24.
  */
+package danmaQ;
 import com.trolltech.qt.core.QPropertyAnimation;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QTimer;
@@ -64,7 +65,7 @@ public class Danmaku extends QLabel{
         TOP,
         BOTTOM,
         FLY;
-    } //
+    }
     static final int VMARGIN;
 
     static {
@@ -79,10 +80,7 @@ public class Danmaku extends QLabel{
         String tcolor = colormapFirst(color); //
         QColor bcolor = colormapSecond(color); //
 
-        String style = style_tmpl
-                .arg(this.app.fontSize)
-                .arg(this.app.fontFamily)
-                .arg(tcolor);
+        String style = String.format(style_tmpl, this.app.fontSize, this.app.fontFamily, tcolor);
 
         QGraphicsDropShadowEffect effect = new QGraphicsDropShadowEffect(this);
 
@@ -150,7 +148,7 @@ public class Danmaku extends QLabel{
     }
     // signals
 
-    private static String style_tmpl = new String("font-size: %1px;font-weight: bold;font-family: %2;color: %3;");
+    private static String style_tmpl = new String("font-size: %dpx;font-weight: bold;font-family: %s;color: %s;");
 
     private int _x, _y;
 

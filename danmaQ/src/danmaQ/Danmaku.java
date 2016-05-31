@@ -159,7 +159,7 @@ public class Danmaku extends QLabel{
     }
     private void init_position() {
         int sw = this.parentWidget().width();
-        this._y = this.dmwin.slot_y(this->slot);
+        this._y = this.dmwin.slot_y(this.slot);
 
         switch (this.position) {
             case FLY:

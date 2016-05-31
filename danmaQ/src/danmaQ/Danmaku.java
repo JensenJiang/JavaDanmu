@@ -69,11 +69,7 @@ public class Danmaku extends QLabel{
         TOP,
         BOTTOM,
         FLY;
-<<<<<<< HEAD
     }
-=======
-    } //
->>>>>>> master
     static final int VMARGIN;
 
     static {
@@ -136,19 +132,18 @@ public class Danmaku extends QLabel{
         );
     }
     public void clean_close() {
-<<<<<<< HEAD
         if(this.position == Position.FLY) {
             emit clear_fly_slot(this.slot);
         }
         this.close();
         emit exited(this);
-=======
+
         if(this.position == FLY) {
             emit clear_fly_slot(this.slot); //
         }
         this.close();
         emit exited(this); //
->>>>>>> master
+        master
     }
 
     // signals

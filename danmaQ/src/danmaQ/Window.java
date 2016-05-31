@@ -64,7 +64,7 @@ public class Window extends QWidget
     	Random r = new Random();
 
     	switch (position) {
-    	case Position.FLY:
+    	case FLY:
     		for (int i=0; i < 6; i++) {
     			int try_slot;
     			if (i < 3) {
@@ -79,7 +79,7 @@ public class Window extends QWidget
     			}
     		}
     		break;
-    	case Position.TOP:
+    	case TOP:
     		for(int i=0; i < this.fixedSlots.length; i++) {
     			if(this.fixedSlots[i] == false) {
     				this.fixedSlots[i] = true;
@@ -88,7 +88,7 @@ public class Window extends QWidget
     			}
     		}
     		break;
-    	case Position.BOTTOM:
+    	case BOTTOM:
     		for(int i=this.fixedSlots.length-1; i >= 0; i--) {
     			if(this.fixedSlots[i] == false) {
     				this.fixedSlots[i] = true;
@@ -128,13 +128,13 @@ public class Window extends QWidget
     	Position pos;
     	if(position.compareTo("fly") == 0) {
     		// myDebug << "fly";
-    		pos = FLY;
+    		pos = Position.FLY;
     	} else if (position.compareTo("top") == 0) {
     		// myDebug << "top";
-    		pos = TOP;
+    		pos = Position.TOP;
     	} else if (position.compareTo("bottom") == 0) {
     		// myDebug << "bottom";
-    		pos = BOTTOM;
+    		pos = Position.BOTTOM;
     	} else {
     		// myDebug << "wrong position: " << position;
     		return;
@@ -160,7 +160,7 @@ public class Window extends QWidget
     }
     
     void delete_danmaku(Danmaku dm) {
-    	if (dm.position == TOP || dm.position == BOTTOM) {
+    	if (dm.position == Position.TOP || dm.position == Position.BOTTOM) {
     		this.fixedSlots[dm.slot] = false;
     	}
     	// myDebug << "danmaku closed";

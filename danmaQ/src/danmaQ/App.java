@@ -108,7 +108,7 @@ public class App extends QWidget
 
             if (this.subscriber != null && this.subscriber.thread().isAlive())
             {
-                this.subscriber.new_danmaku.connect(w, "newDanmaku(String, String, String)");
+                this.subscriber.new_danmaku.connect(w, "new_danmaku(String, String, String)");
             }
         }
     }
@@ -124,7 +124,7 @@ public class App extends QWidget
                 Window window = (Window)(w.next());
                 this.subscriber.new_danmaku.connect(window, "new_danmaku(String, String, String)");
             }
-            this.subscriber.new_alert.connect(this, "on_new_alert(String)");
+            this.subscriber.new_alert.connect(this, "onNewAlert(String)");
             this.subscriber.thread().start();
             onSubscriptionStarted();
         }

@@ -11,8 +11,8 @@ import java.util.Random;
 public class Window extends QWidget
 {
     App app;
-    Boolean[] flySlots;
-    Boolean[] fixedSlots;
+    boolean[] flySlots;
+    boolean[] fixedSlots;
 
     static
     {
@@ -49,6 +49,9 @@ public class Window extends QWidget
     {
         int height = this.height();
         int nlines = (height - 2 * UI.VMARGIN) / (this.app.lineHeight);
+
+        flySlots = new boolean[nlines];
+        fixedSlots = new boolean[nlines];
 
         for (int i = 0; i < nlines; i++)
         {

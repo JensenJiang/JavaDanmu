@@ -112,13 +112,13 @@ public class Window extends QWidget
     	
     	Pattern p = Pattern.compile("([^\\\\])\\\\n");
     	Matcher m = p.matcher(escaped);
-    	m.replaceAll("\\1<br/>");
+    	escaped = m.replaceAll("\\1<br/>");
     	p = Pattern.compile("\\\\\\\\n");
     	m = p.matcher(escaped);
-    	m.replaceAll("\\n");
+        escaped = m.replaceAll("\\n");
     	p = Pattern.compile("\\[s\\](.+)\\[/s\\]");
     	m = p.matcher(escaped);
-    	m.replaceAll("<s>\\1</s>");
+        escaped = m.replaceAll("<s>\\1</s>");
 
     	return escaped;
     }

@@ -69,7 +69,11 @@ public class Danmaku extends QLabel{
         TOP,
         BOTTOM,
         FLY;
+<<<<<<< HEAD
     }
+=======
+    } //
+>>>>>>> master
     static final int VMARGIN;
 
     static {
@@ -80,7 +84,7 @@ public class Danmaku extends QLabel{
         super(escape_text(text), parent);
         this.dmwin = parent;
         this.app = app;
-        this.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose); // 这里不一样
+        this.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose); //
         String tcolor = colormapFirst(color); //
         QColor bcolor = colormapSecond(color); //
 
@@ -132,11 +136,19 @@ public class Danmaku extends QLabel{
         );
     }
     public void clean_close() {
+<<<<<<< HEAD
         if(this.position == Position.FLY) {
             emit clear_fly_slot(this.slot);
         }
         this.close();
         emit exited(this);
+=======
+        if(this.position == FLY) {
+            emit clear_fly_slot(this.slot); //
+        }
+        this.close();
+        emit exited(this); //
+>>>>>>> master
     }
 
     // signals

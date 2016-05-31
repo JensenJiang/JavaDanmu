@@ -3,7 +3,7 @@ CXX = g++
 INCLUDE = -I/usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux
 CPPFLAGS = ${INCLUDE}
 LDFLAGS = -shared -fPIC
-LIBS = -lX11 -lXext
+LIBS = -lX11 -lXext -lQtGui
 
 .PHONY: all clean
 

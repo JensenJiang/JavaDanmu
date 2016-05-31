@@ -4,6 +4,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -27,7 +28,7 @@ public class App extends QWidget
     Subscriber subscriber;
     TrayIcon trayIcon;
 
-    Signal0 stopSubscription = new Signal0();
+    Signal0 stop_subscription = new Signal0();
 
     public static void main(String []args)
     {
@@ -107,39 +108,76 @@ public class App extends QWidget
 
             if (this.subscriber != null && this.subscriber.thread().isAlive())
             {
-                this.subscriber.newDanmaku.connect(w, "newDanmaku(String, String, String)");
+                this.subscriber.new_danmaku.connect(w, "newDanmaku(String, String, String)");
             }
         }
     }
 
     void toggleSubscription()
     {
-        /* not implemented */
+        /* TODO: signals on QThread not connected */
+        if (this.subscriber == null || !this.subscriber.thread().isAlive())
+        {
+            this.subscriber = new Subscriber(server.text(), channel.text(), passwd.text(), this);
+            for (Iterator<QWidget> w = this.dmWindows.iterator(); w.hasNext();)
+            {
+                Window window = (Window)(w.next());
+                this.subscriber.new_danmaku.connect(window, "new_danmaku(String, String, String)");
+            }
+            this.subscriber.new_alert.connect(this, "on_new_alert(String)");
+            this.subscriber.thread().start();
+            onSubscriptionStarted();
+        }
+        else
+        {
+            this.subscriber.thread().interrupt();
+            stop_subscription.emit();
+            onSubscriptionStopped();
+        }
     }
 
     void resetWindows()
     {
-        /* not implemented */
+        this.dmWindows.clear();
+        /* TODO: GC is not reliable, destructor needed */
+        System.gc();
+        this.initWindows();
     }
 
     void showAboutDialog()
     {
-        /* not implemented */
+        this.show();
+        QMessageBox.about(this, "About",
+                "<strong>DanmaQ</strong>" +
+                "<p>Copyright &copy; 2015 Justin Wong<br />" +
+                "Tsinghua University TUNA Association</p>" +
+                "<p> Source Code Available under GPLv3<br />" +
+                "<a href='https://github.com/JensenJiang/JavaDanmu'>" +
+                "https://github.com/JensenJiang/JavaDanmu" +
+                "</a></p>");
     }
 
     void onSubscriptionStarted()
     {
-        /* not implemented */
+        this.hide();
+        this.trayIcon.setIconRunning();
+        this.mainBtn.setText("&Unsubscribe");
+        this.trayIcon.showMessage("Subscription Started", "Let's Go");
     }
 
     void onSubscriptionStopped()
     {
-        /* not implemented */
+        this.trayIcon.setIconStopped();
+        this.mainBtn.setText("&Subscribe");
     }
 
     void onNewAlert(String msg)
     {
-        /* not implemented */
+        this.trayIcon.showMessage("Ooops!", msg, QSystemTrayIcon.MessageIcon.Critical);
+        this.subscriber.thread().interrupt();
+        stop_subscription.emit();
+        onSubscriptionStopped();
+        this.subscriber = null;
     }
 }
 

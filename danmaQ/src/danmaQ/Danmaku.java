@@ -13,6 +13,10 @@ import com.trolltech.qt.gui.QLabel;
 import java.lang.*;
 
 public class Danmaku extends QLabel{
+    public Position position;
+    public int slot;
+    public Window dmwin;
+    public App app;
 
     static String colormapFirst(String color) {
         switch(color) {
@@ -111,10 +115,6 @@ public class Danmaku extends QLabel{
         this.slot = slot;
         this.init_position();
     }
-    public Position position;
-    int slot;
-    Window dmwin;
-    App app;
 
     public void fly() {
         QPropertyAnimation animation = new QPropertyAnimation(this, "geometry", this);
@@ -132,11 +132,18 @@ public class Danmaku extends QLabel{
         );
     }
     public void clean_close() {
+        if(this.position == Position.FLY) {
+            emit clear_fly_slot(this.slot);
+        }
+        this.close();
+        emit exited(this);
+
         if(this.position == FLY) {
             emit clear_fly_slot(this.slot); //
         }
         this.close();
         emit exited(this); //
+        master
     }
 
     // signals
@@ -161,7 +168,7 @@ public class Danmaku extends QLabel{
 
         switch (this.position) {
             case FLY:
-                // myDefug
+                // myDebug
                 this._x = sw;
                 this.fly();
                 break;

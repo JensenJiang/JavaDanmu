@@ -2,8 +2,11 @@
  * Created by hrsonion on 16/5/24.
  */
 package danmaQ;
+import com.trolltech.qt.core.QAbstractAnimation;
+import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QPropertyAnimation;
 import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.QTimer;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QColor;
@@ -17,7 +20,8 @@ public class Danmaku extends QLabel{
     public int slot;
     public Window dmwin;
     public App app;
-
+    public Signal0 exited = new Signal0();
+    public Signal1<Integer> clear_fly_slot = new Signal1<>();
     static String colormapFirst(String color) {
         switch(color) {
             case "white" :
@@ -64,12 +68,6 @@ public class Danmaku extends QLabel{
         }
         return new QColor();
     }
-
-    public enum Position {
-        TOP,
-        BOTTOM,
-        FLY;
-    }
     static final int VMARGIN;
 
     static {
@@ -107,8 +105,8 @@ public class Danmaku extends QLabel{
         }
         this.setStyleSheet(style);
         this.setContentsMargins(0, 0, 0, 0);
-
-        Qsize _msize = this.minimumSizeHint();
+        
+        QSize _msize = this.minimumSizeHint();
         this.resize(_msize);
 
         this.position = position;
@@ -117,43 +115,31 @@ public class Danmaku extends QLabel{
     }
 
     public void fly() {
-        QPropertyAnimation animation = new QPropertyAnimation(this, "geometry", this);
+        QPropertyAnimation animation = new QPropertyAnimation(this, new QByteArray("geometry"), this);
         animation.setDuration(10 * 1000);
         animation.setStartValue(
-                QRect(this._x, this._y, this.width(), this.height()));
+                new QRect(this._x, this._y, this.width(), this.height()));
 
         animation.setEndValue(
-                QRect(-this.width(), this._y, this.width(), this.height()));
-        animation.start(QAbstractAnimation.DeleteWhenStopped);
-
-        connect(
-                animation, SIGNAL(finished()),
-                this, SLOT(clean_close())
-        );
+                new QRect(-this.width(), this._y, this.width(), this.height()));
+        animation.start(QAbstractAnimation.DeletionPolicy.DeleteWhenStopped);
+        
+        animation.finished.connect(this ,"clean_close()");
     }
     public void clean_close() {
         if(this.position == Position.FLY) {
-            emit clear_fly_slot(this.slot);
+            clear_fly_slot.emit(slot);
         }
         this.close();
-        emit exited(this);
+        exited.emit();
 
         if(this.position == Position.FLY) {
-            emit clear_fly_slot(this.slot); //
+            clear_fly_slot.emit(slot);
         }
         this.close();
-        emit exited(this); //
-        master
+        exited.emit();
     }
 
-    // signals
-    void exited() {
-
-    }
-    void clear_fly_slot(int slot) {
-
-    }
-    // signals
 
     private static String style_tmpl = new String("font-size: %dpx;font-weight: bold;font-family: %s;color: %s;");
 
@@ -176,7 +162,7 @@ public class Danmaku extends QLabel{
             case BOTTOM:
                 this._x = (sw / 2) - (this.width() / 2);
                 this.move(this._x, this._y);
-                QTimer.singleShot(10 * 1000, this, SLOT(clean_close()));
+                QTimer.singleShot(10 * 1000, this, "clean_close()");
         }
     }
 }

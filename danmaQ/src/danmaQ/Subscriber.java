@@ -46,7 +46,7 @@ public class Subscriber extends QObject implements Runnable{
 		mark_stop = false;
 		QEventLoop loop = new QEventLoop();
 		http.done.connect(loop,"quit()");
-		((App)this.parent()).stop_subscription.connect(loop,"quit");
+		((App)this.parent()).stop_subscription.connect(loop,"quit()");
 		
 		//Set timeout
 		QTimer timeout = new QTimer();

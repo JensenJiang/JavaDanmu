@@ -64,7 +64,7 @@ public class Danmaku extends QLabel{
         TOP,
         BOTTOM,
         FLY;
-    } // 枚举没有初始值 TOP = 1
+    } //
     static final int VMARGIN;
 
     static {
@@ -75,7 +75,7 @@ public class Danmaku extends QLabel{
         super(escape_text(text), parent);
         this.dmwin = parent;
         this.app = app;
-        this.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose); // 这里不一样
+        this.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose); //
         String tcolor = colormapFirst(color); //
         QColor bcolor = colormapSecond(color); //
 
@@ -125,7 +125,7 @@ public class Danmaku extends QLabel{
                 QRect(this._x, this._y, this.width(), this.height()));
 
         animation.setEndValue(
-                QRect(-this->width(), this->_y, this->width(), this->height()));
+                QRect(-this.width(), this._y, this.width(), this.height()));
         animation.start(QAbstractAnimation.DeleteWhenStopped);
 
         connect(
@@ -135,10 +135,10 @@ public class Danmaku extends QLabel{
     }
     public void clean_close() {
         if(this.position == FLY) {
-            emit clear_fly_slot(this.slot); // 这里不知道对不对
+            emit clear_fly_slot(this.slot); //
         }
         this.close();
-        emit exited(this); // 这里不知道对不对
+        emit exited(this); //
     }
 
     // signals
@@ -159,7 +159,7 @@ public class Danmaku extends QLabel{
     }
     private void init_position() {
         int sw = this.parentWidget().width();
-        this._y = this.dmwin.slot_y(this->slot);
+        this._y = this.dmwin.slot_y(this.slot);
 
         switch (this.position) {
             case FLY:

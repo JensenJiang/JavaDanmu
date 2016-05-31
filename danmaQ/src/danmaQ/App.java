@@ -1,5 +1,6 @@
 package danmaQ;
 
+import com.trolltech.qt.QThread;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -125,7 +126,8 @@ public class App extends QWidget
                 this.subscriber.new_danmaku.connect(window, "new_danmaku(String, String, String)");
             }
             this.subscriber.new_alert.connect(this, "onNewAlert(String)");
-            this.subscriber.thread().start();
+            QThread runner = new QThread(this.subscriber);
+            runner.run();
             onSubscriptionStarted();
         }
         else

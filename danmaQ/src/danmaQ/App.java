@@ -127,14 +127,15 @@ public class App extends QWidget
             }
             this.subscriber.new_alert.connect(this, "onNewAlert(String)");
             QThread runner = new QThread(this.subscriber);
-            runner.run();
-            onSubscriptionStarted();
+            runner.starting.connect(this, "onSubscriptionStarted()");
+            runner.finished.connect(this, "onSubscriptionStopped()");
+            runner.start();
+//            QThreadPool.globalInstance().start(this.subscriber);
         }
         else
         {
             this.subscriber.thread().interrupt();
             stop_subscription.emit();
-            onSubscriptionStopped();
         }
     }
 

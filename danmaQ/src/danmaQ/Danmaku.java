@@ -20,7 +20,7 @@ public class Danmaku extends QLabel{
     public int slot;
     public Window dmwin;
     public App app;
-    public Signal0 exited = new Signal0();
+    public Signal1<Danmaku> exited = new Signal1<>();
     public Signal1<Integer> clear_fly_slot = new Signal1<>();
     static String colormapFirst(String color) {
         switch(color) {
@@ -131,13 +131,7 @@ public class Danmaku extends QLabel{
             clear_fly_slot.emit(slot);
         }
         this.close();
-        exited.emit();
-
-        if(this.position == Position.FLY) {
-            clear_fly_slot.emit(slot);
-        }
-        this.close();
-        exited.emit();
+        exited.emit(this);
     }
 
 

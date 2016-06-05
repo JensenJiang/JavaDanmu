@@ -72,8 +72,10 @@ public class Window extends QWidget
     			int try_slot;
     			if (i < 3) {
     				try_slot = r.nextInt() % (this.flySlots.length / 2);
+    				if(try_slot < 0) try_slot += this.flySlots.length / 2;//to avoid negative number
     			} else {
     				try_slot = r.nextInt() % (this.flySlots.length);
+    				if(try_slot < 0) try_slot += this.flySlots.length;
     			}
     			if(this.flySlots[try_slot] == false) {
     				this.flySlots[try_slot] = true;
